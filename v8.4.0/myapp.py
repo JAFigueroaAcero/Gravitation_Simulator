@@ -9,7 +9,6 @@ title: graficacion de gravitacion
 ver: 2.2
 """
 
-from more_itertools import last
 from tornado.ioloop import IOLoop
 
 import main as m
