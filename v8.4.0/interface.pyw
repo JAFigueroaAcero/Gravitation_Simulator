@@ -9,8 +9,7 @@ Title: Interfaz tkinter Gravitación sim
 ver: 2.7
 """
 
-#For MacOs change \\ to //
-#double backslash to double slash
+
 
 from os.path import isfile, isdir
 import pandas as pd

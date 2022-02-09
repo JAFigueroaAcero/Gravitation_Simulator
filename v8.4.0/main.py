@@ -6,7 +6,7 @@ Created on Sun Nov 21 18:17:21 2021
 
 Title: Gravitación sim
 
-ver: 8.4
+ver: 8.5
 """
 
 import functions as f

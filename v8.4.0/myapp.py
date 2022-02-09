@@ -6,7 +6,7 @@ Created on Wed Dec  1 08:02:06 2021
 
 title: graficacion de gravitacion
 
-ver: 2.2
+ver: 2.3
 """
 
 from tornado.ioloop import IOLoop
