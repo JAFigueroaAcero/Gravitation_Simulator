@@ -36,14 +36,19 @@ def md(doc):
         df = m.main()
         df2 = pd.read_csv('assets//configs.csv')
         dfl2 = df2.values.tolist()[0]  
+        df3 = pd.read_csv(path)
+        dfl3 = df3.values.tolist()
     else:
         pathprov = 'assets//' + path.replace('//', '-').replace('.csv', '')
         l_dir = listdir(pathprov)
         l_dir.pop(l_dir.index('configs.csv'))
+        l_dir.pop(l_dir.index('data.csv'))
         df2 = pd.read_csv(f'{pathprov}//configs.csv')
         dfl2 = df2.values.tolist()[0]
         xs = []
         ys = []
+        l_dir.sort()
+        print(l_dir)
         for d in l_dir:
             loc = pd.read_csv(f'{pathprov}//{d}')
             loc = loc.values.tolist()
@@ -53,9 +58,8 @@ def md(doc):
         'xs': xs,
         'ys': ys
         }
-
-    df3 = pd.read_csv(path)
-    dfl3 = df3.values.tolist()
+        df3 = pd.read_csv(f'{pathprov}//data.csv')
+        dfl3 = df3.values.tolist()
         
     lenbase = len(df['xs'][0])
     i = 0
