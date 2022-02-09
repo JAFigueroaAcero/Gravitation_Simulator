@@ -6,7 +6,7 @@ Created on Mon Nov  8 19:50:20 2021
 
 Title: Interfaz tkinter Gravitación sim
 
-ver: 2.6
+ver: 2.7
 """
 
 #For MacOs change \\ to //
@@ -584,8 +584,6 @@ class main():
                             e.insert(0,loc2[n])
                     else:
                         ad(self, 'Not found', f'The name "{loc}" does not exist')
-            elif loc != '':
-                ad(self, 'Not found', f'The command {loc} does not exist')
             else:
                 show(self, list_a = self.list_val)
         self.b1 = tk.Button(self.a2, text = 'Run', width=6,padx=5,pady=0, command = lambda: run())
