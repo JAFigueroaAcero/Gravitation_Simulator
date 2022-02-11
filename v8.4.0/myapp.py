@@ -21,7 +21,8 @@ from bokeh.application import Application
 from bokeh.server.server import Server
 import pandas as pd
 from os import listdir
-import os.path
+
+
 
 def md(doc):
     global lenbase
@@ -126,9 +127,7 @@ def main(l_data = False, route = None):
     global last
     global path2
     global path
-    df = pd.read_csv(os.path.join('assets', 'path.csv')
-
-)
+    df = pd.read_csv('assets//path.csv')
     dfl = df.values.tolist()[0]
     path = dfl[0]
 

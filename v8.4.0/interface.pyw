@@ -13,22 +13,19 @@ ver: 2.7
 
 from os.path import isfile, isdir
 import pandas as pd
-import os.path
 
 def proute(pr):
     global path
     df = pd.DataFrame([pr], columns = ['path'])
-    df.to_csv(os.path.join('assets', 'path.csv'), index=False)
+    df.to_csv('assets//path.csv', index=False)
     path = pr
 
-if isfile(os.path.join('assets', 'path.csv')):
-        df = pd.read_csv(os.path.join('assets', 'path.csv')
-
-)
+if isfile('assets//path.csv'):
+        df = pd.read_csv('assets//path.csv')
         dfl = df.values.tolist()[0]
         path = dfl[0]
 else:    
-        proute(os.path.join('assets', 'data.csv'))
+        proute('assets//data.csv')
 
 
 import tkinter as tk
