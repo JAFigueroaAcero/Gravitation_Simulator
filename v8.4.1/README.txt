@@ -1,5 +1,5 @@
 Title: grav_simulator
-Version: 8.4.0
+Version: 8.4.1
 Author: Juan Antonio Figueroa Acero
 Institution: Centro de Ciencias Exactas e Ingenierías (CUCEI) of Universidad de Guadalajara (UDG)
 

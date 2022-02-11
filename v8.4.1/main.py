@@ -16,10 +16,12 @@ import matplotlib.pyplot as plt
 import time
 from os import mkdir
 from shutil import rmtree
-
+import os.path
 
 def main():
-    df = pd.read_csv('assets//path.csv')
+    df = pd.read_csv(os.path.join('assets', 'path.csv')
+
+)
     dfl = df.values.tolist()[0]
     path = dfl[0]
     itime = time.time()
