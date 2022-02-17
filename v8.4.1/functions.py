@@ -6,7 +6,7 @@ Created on Fri Dec  3 22:11:22 2021
 
 Title: Funciones de Gravitación
 
-Ver: 6.1
+Ver: 6.2
 """
 
 import numpy as np
@@ -103,8 +103,48 @@ def angle_frac2rad(x,y):
         return inc
     else:
         return 2*np.pi+inc
+ms = []
+def masssum(a):
+    '''
+    gets the mass of all the posibles for masspoint function.
 
+    Parameters
+    ----------
+    a : array set of values.
 
+    Returns
+    -------
+    None
+    '''
+    global ms
+    for n in range(len(a)):
+        ac = a.copy()
+        ac = np.delete(ac, n)
+        val = 0
+        for n in ac:
+            val += n[1]
+        ms.append(val)
+GM = []
+def gm(a,dt):
+    '''
+    gets the repeated operations for actvec2 function.
+
+    Parameters
+    ----------
+    a : array set of values.
+    dt : time to apply in the difference.
+
+    Returns
+    -------
+    None
+    '''
+    global GM
+    global DT
+    DT = dt
+    for n,m in enumerate(a):
+        u = (G * ms[n] * DT**2)/2
+        v = G * ms[n] * DT
+        GM.append([u,v])
 def masspoint(a, eje, passing):
     '''
     gets the masspoint of an axis from a array set.
@@ -117,21 +157,18 @@ def masspoint(a, eje, passing):
 
     Returns
     -------
-    axis: coordinate that is represented.
-    den : sum of the masses of the array set excpeting the passing value.
+    axis : coordinate that is represented.
 
     '''
     num = 0
-    den = 0
     ac = a.copy()
     ac = np.delete(ac, passing)
     
     for n in ac:
         num += (n[1]*n[3+eje])
-        den += n[1]
-    return num/den, den
+    return num/ms[passing]
 
-def actvec2(ni,vi,m,r,dt,sincos):
+def actvec2(ni,vi,r,sincos,using):
     '''
     Updates the vector with the initial data and a dt interval.
 
@@ -139,29 +176,27 @@ def actvec2(ni,vi,m,r,dt,sincos):
     ----------
     ni : linear initial position.
     vi : linear initial velocity.
-    m : mass of the gravitation.
     r : linear distance between values.
-    dt : time to apply in the difference.
     sincos : bidemensional axis that is being applied as np.sin, np.cos.
+    using : using data of matrices.
 
     Returns
     -------
-    ni : linear final position.
+    nf : linear final position.
     vf : linear final velocity.
 
     '''
-    nf = ni + vi * dt + (G * m * dt**2)/(2 * r**2) * sincos
-    vf = vi + (G * m * dt)/(r**2) * sincos
+    nf = ni + vi * DT + GM[using][0]/(r**2) * sincos
+    vf = vi + (GM[using][1])/(r**2) * sincos
     return nf,vf
 
-def actvecglob3(a, dt, using):
+def actvecglob3(a, using):
     '''
     Updates an array of set of values of a a global data to apply the actvec2 inside.
 
     Parameters
     ----------
     a : array set of values.
-    dt : time to apply in the difference.
     using : vector thats going to be represented.
 
     Returns
@@ -172,16 +207,16 @@ def actvecglob3(a, dt, using):
     ac = a.copy()
     ac = np.delete(ac, using)
     
-    x,den = masspoint(a, 0, using)
-    y, _ = masspoint(a, 1, using)
+    x = masspoint(a, 0, using)
+    y = masspoint(a, 1, using)
     
     r = magnitude(x, y, a[using][3], a[using][4])
     x -= a[using][3]
     y -= a [using][4]
     prad = angle_frac2rad(x, y)
     
-    xi, vx = actvec2(a[using][3], a[using][5], den, r, dt, np.cos(prad))
-    yi, vy = actvec2(a[using][4], a[using][6], den, r, dt, np.sin(prad))
+    xi, vx = actvec2(a[using][3], a[using][5], r, np.cos(prad),using)
+    yi, vy = actvec2(a[using][4], a[using][6], r, np.sin(prad),using)
     
     return np.array([a[using][0],a[using][1],a[using][2],xi,yi,vx,vy])
     

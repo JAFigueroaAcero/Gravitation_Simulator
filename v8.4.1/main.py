@@ -6,7 +6,7 @@ Created on Sun Nov 21 18:17:21 2021
 
 Title: Gravitación sim
 
-ver: 8.5
+ver: 8.6
 """
 
 import functions as f
@@ -19,19 +19,15 @@ from shutil import rmtree
 import os.path
 
 def main():
-    df = pd.read_csv(os.path.join('assets', 'path.csv')
-
-)
+    df = pd.read_csv(os.path.join('assets', 'path.csv'))
     dfl = df.values.tolist()[0]
     path = dfl[0]
-    itime = time.time()
     df = pd.read_csv(path)
     dfl = df.values.tolist()
     a = np.array([None for n in range(len(dfl))])
     for n,e in enumerate(dfl):
         dfl[n] = dfl[n][:-2] + list(f.positionxy_angle(dfl[n][-1], dfl[n][-2]))
         a[n] = np.array([float(a) for a in dfl[n]])
-    
     '''
     name
     mass
@@ -54,20 +50,20 @@ def main():
     itf = frec * tts / trps # total final iterations
     rel = it / itf  # relation of total iterations over total final iterations
     
-    
+    f.masssum(a)
+    f.gm(a,dt)
     
     list_xs = [[] for n in range(len(dfl))]
     list_ys = [[] for n in range(len(dfl))]
-    
+
     while t < tts:
         ac = a.copy()
         for n,el in enumerate(a):
-            a[n] = f.actvecglob3(ac, dt, n)
+            a[n] = f.actvecglob3(ac, n)
         for n, el in enumerate(list_xs):
             el.append(a[n][3])
             list_ys[n].append(a[n][4])
         t += dt
-
 
     list_g= [[list_xs[n],list_ys[n]] for n in range(len(list_xs))]
     
