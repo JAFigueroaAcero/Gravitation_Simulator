@@ -6,7 +6,7 @@ Created on Wed Dec  1 08:02:06 2021
 
 title: graficacion de gravitacion
 
-ver: 2.3
+ver: 2.4
 """
 
 from tornado.ioloop import IOLoop
@@ -47,7 +47,6 @@ def md(doc):
         xs = []
         ys = []
         l_dir.sort()
-        print(l_dir)
         for d in l_dir:
             loc = pd.read_csv(f'{pathprov}//{d}')
             loc = loc.values.tolist()
@@ -68,24 +67,41 @@ def md(doc):
     obj = len(df['xs'])
     x = []
     y = []
+    if dfl2[8] + dfl2[9] == 1:
+        for n in range(obj):
+            x += df['xs'][n]
+            y += df['ys'][n]
+        x = (max(x), min(x))
+        vals = tuple(1.1*v for v in x)
+        t = (max(y),min(y))
+        vt = max(t)
+        vx = max(vals)
+        p = figure(y_range = (-1.1*vt,1.1*vt))
+    else:
+        for n in range(obj):
+            x += df['xs'][n]
+            y += df['ys'][n]
+        
+        vals = (max(x), min(x), max(y), min(y))
+        vals = tuple(1.1*v for v in vals)
+        v = max(vals)
+        p = figure(x_range = (-v, v), y_range = (-v, v))
 
-    for n in range(obj):
-        x += df['xs'][n]
-        y += df['ys'][n]
     
-    vals = (max(x), min(x), max(y), min(y))
-    vals = tuple(1.1*v for v in vals)
-    v = max(vals)
-
-
-    p = figure(x_range = (-v, v), y_range = (-v, v))
     
     
     r = p.multi_line(xs=[[0] for n in range(obj)], ys=[[0] for n in range(obj)], color=['blue' for n in range(obj)],line_color ='blue')
     
     list_cir = []
     for n in dfl3:
-        list_cir.append(p.circle(x = [0], y= [0], radius= n[2], color = 'red' ))
+        if dfl2[6] == 1:
+            if dfl2[8] + dfl2[9] == 1:
+                v = 0
+            else:
+                v = n[2]
+        else:
+            v = 0
+        list_cir.append(p.circle(x = [0], y= [0], radius= v, color = 'red' ))
     
     list_dsc = [cir.data_source for cir in list_cir]
     ds = r.data_source

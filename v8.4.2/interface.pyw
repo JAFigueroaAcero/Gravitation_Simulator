@@ -6,7 +6,7 @@ Created on Mon Nov  8 19:50:20 2021
 
 Title: Interfaz tkinter Gravitación sim
 
-ver: 2.7
+ver: 2.8
 """
 
 
@@ -338,7 +338,12 @@ class config():
             ['Converter', 'Opens a sum, multiplication, exponential \n and variable calculator.'],
             ['Save', 'Updates the global database of configs \n with the current entries. \n Double save to save current data into new path.'],
             ['Reset', 'Set the configurations to it default value.'],
-            ['Clear', 'Clears the entry sets.']
+            ['Clear', 'Clears the entry sets.'],
+            ['Save graphs', 'Activate to save graphs of simulation.'],
+            ['Pos', 'Select position moving graph and save its data.'],
+            ['Vel', 'Select velocity moving graph and save its data.'],
+            ['x', 'Moving graph and save of x axis of position or velocity.'],
+            ['y', 'Moving graph and save of y axis of position or velocity.']
             ]
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
@@ -380,12 +385,41 @@ class config():
         self.path.insert(0,path)
         self.list_entry = [self.rtps, self.dt, self.tst, self.ips, self.il, self.path]
 
-        
+
+        self.graphs = tk.BooleanVar(self.root)
+        self.pos = tk.BooleanVar(self.root)
+        self.vel = tk.BooleanVar(self.root)
+        self.x = tk.BooleanVar(self.root)
+        self.y = tk.BooleanVar(self.root)
+
+        self.list_bool = [self.graphs, self.pos, self.vel, self.x, self.y]
+        def poschange():
+            if self.pos.get():
+                self.vel.set(False)
+            else:
+                self.vel.set(True)
+        def velchange():
+            if self.vel.get():
+                self.pos.set(False)
+            else:
+                self.pos.set(True)
+        def xchange():
+            loc1 = self.x.get()
+            loc2 = self.y.get()
+            if not loc1 and not loc2:
+                self.x.set(True)
+        def ychange():
+            loc1 = self.x.get()
+            loc2 = self.y.get()
+            if not loc1 and not loc2:
+                self.y.set(True)
         if isfile('assets//configs.csv'):
             df = pd.read_csv('assets//configs.csv')
             dfl = df.values.tolist()[0]
-            for n,el in enumerate(dfl):
+            for n,el in enumerate(dfl[0:5]):
                 self.list_entry[n].insert(0,el)
+            for n,el in enumerate(dfl[5:]):
+                self.list_bool[n].set(el)
         
         def save():
             global path
@@ -402,11 +436,13 @@ class config():
                 if not int(float(self.ips.get())) < 20 and int(float(self.ips.get())) - float(self.ips.get()) == 0:
                     for n in self.list_entry[0:-1]:
                         updatelist.append(int(calc(self,n.get())))
+                    for n in self.list_bool:
+                        updatelist.append(int(n.get()))
                     if not None in updatelist:
-                        for n,u in enumerate(updatelist):
+                        for n,u in enumerate(updatelist[0:5]):
                             self.list_entry[n].delete(0, 'end')
                             self.list_entry[n].insert(0, u)
-                        df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il'])
+                        df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
                         df.to_csv('assets//configs.csv', index=False)
                         
                         ad(self, 'Config updated', 'The configurations have been updated. \n data assets updated')
@@ -419,10 +455,38 @@ class config():
             df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips','il'])
             df.to_csv('assets//configs.csv', index=False)
             ad(self, 'Config updated', 'The configurations have been \n set to default')
+        
+        self.cbgrpahs = ttk.Checkbutton(self.a2,
+            text='Save graphs',
+            variable=self.graphs)
+        self.cbgrpahs.grid(row=0, column=3,rowspan=2,padx=5, pady=5)
 
-            
+        self.cbpos = ttk.Checkbutton(self.a2,
+            text='pos',
+            variable=self.pos,
+            command=poschange)
+        self.cbpos.grid(row=0, column=5,padx=5, pady=1)
+
+        self.cbvel = ttk.Checkbutton(self.a2,
+            text='vel',
+            variable=self.vel,
+            command=velchange)
+        self.cbvel.grid(row=1, column=5,padx=5, pady=1)
+
+        self.cbx = ttk.Checkbutton(self.a2,
+            text='x',
+            variable=self.x,
+            command=xchange)
+        self.cbx.grid(row=0, column=4,padx=5, pady=1)
+
+        self.cby = ttk.Checkbutton(self.a2,
+            text='y',
+            variable=self.y,
+            command=ychange)
+        self.cby.grid(row=1, column=4,padx=5, pady=1)
+
         self.b1 = tk.Button(self.a2, text = '?', width=2, padx=5, pady=0, command = lambda: helpd(self,self.list_a))
-        self.b1.grid(row=0, column=0,padx=5, pady=5)
+        self.b1.grid(row=0, column=0,rowspan = 2,padx=5, pady=5)
         
         self.b2 = tk.Button(self.a3, text = 'Save', width=6, padx=5, pady=0, command = lambda: save())
         self.b2.grid(row=0, column=0,padx=5, pady=5)
@@ -431,7 +495,7 @@ class config():
         self.b3.grid(row=0, column=1,padx=5, pady=5)
         
         self.b4 = tk.Button(self.a2, text = 'Converter', width=6, padx=5, pady=0, command = lambda: conversion(self))
-        self.b4.grid(row=0, column=2,padx=5, pady=5)
+        self.b4.grid(row=0, column=2, rowspan= 2,padx=5, pady=5)
         
         self.b5 = tk.Button(self.a3, text = 'Clear', width=6, padx=5, pady=0, command = lambda: clear(self.list_entry))
         self.b5.grid(row=0, column=2,padx=5, pady=5)
