@@ -6,7 +6,7 @@ Created on Mon Nov  8 19:50:20 2021
 
 Title: Interfaz tkinter Gravitación sim
 
-ver: 2.8
+ver: 2.9
 """
 
 
@@ -38,7 +38,7 @@ from tkinter import Tk
 from tkinter import ttk
 
 
-defaultconfigs = [60*60*24,60*10,60*60*24*365*2,20,500]
+defaultconfigs = [60*60*24,60*10,60*60*24*365*2,20,500,1,1,0,1,1]
 
 
 
@@ -168,7 +168,7 @@ class ad():
         self.root.resizable(0,0)
         self.root.geometry('240x100')
         self.root.title(title)
-        self.root.iconbitmap('assets//logo.ico')
+        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width=200, height=100)
         self.a1l = tk.Label(self.a1, text=text, anchor="center")
@@ -204,7 +204,7 @@ class conversion():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title('Converter')
-        self.root.iconbitmap('assets//logo.ico')
+        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width = 220, height = 200)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -301,7 +301,7 @@ class helpd():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title(name)
-        self.root.iconbitmap('assets//logo.ico')
+        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
         
         self.alist = [tk.Frame(self.root)]
         loc = 0
@@ -348,7 +348,7 @@ class config():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title('config')
-        self.root.iconbitmap('assets//logo.ico')
+        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width = 220, height = 200)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -413,8 +413,8 @@ class config():
             loc2 = self.y.get()
             if not loc1 and not loc2:
                 self.y.set(True)
-        if isfile('assets//configs.csv'):
-            df = pd.read_csv('assets//configs.csv')
+        if isfile(os.path.join('assets','configs.csv')):
+            df = pd.read_csv(os.path.join('assets','configs.csv'))
             dfl = df.values.tolist()[0]
             for n,el in enumerate(dfl[0:5]):
                 self.list_entry[n].insert(0,el)
@@ -443,7 +443,7 @@ class config():
                             self.list_entry[n].delete(0, 'end')
                             self.list_entry[n].insert(0, u)
                         df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
-                        df.to_csv('assets//configs.csv', index=False)
+                        df.to_csv(os.path.join('assets','configs.csv'), index=False)
                         
                         ad(self, 'Config updated', 'The configurations have been updated. \n data assets updated')
                 else:
@@ -452,8 +452,8 @@ class config():
                 ad(self, 'Wrong data', 'Fill data correctly to be able to save. \n data assets updated')
         def defset():
             global defaultconfigs
-            df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips','il'])
-            df.to_csv('assets//configs.csv', index=False)
+            df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
+            df.to_csv(os.path.join('assets','configs.csv'), index=False)
             ad(self, 'Config updated', 'The configurations have been \n set to default')
         
         self.cbgrpahs = ttk.Checkbutton(self.a2,
@@ -533,7 +533,7 @@ class main():
         self.root = tk.Tk()
         self.root.resizable(0,0)
         self.root.title('Gravity simulator')
-        self.root.iconbitmap('assets//logo.ico')
+        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
         
         self.a1 = tk.Frame(self.root)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -585,7 +585,8 @@ class main():
                 df.to_csv(path, index=False)
                 m.main()
         def runlast():
-            pathprov = 'assets//' + path.replace('//', '-').replace('.csv', '')
+            loc = path.replace('/', '-').replace('.csv', '')
+            pathprov = os.path.join('assets',loc)
             if isdir(pathprov):
                     m.main(l_data = True, route = pathprov)
             else:

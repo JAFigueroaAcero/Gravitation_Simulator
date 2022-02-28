@@ -6,7 +6,7 @@ Created on Wed Dec  1 08:02:06 2021
 
 title: graficacion de gravitacion
 
-ver: 2.4
+ver: 2.5
 """
 
 from tornado.ioloop import IOLoop
@@ -33,22 +33,23 @@ def md(doc):
     global list_dsc
     if not last:
         df = m.main()
-        df2 = pd.read_csv('assets//configs.csv')
+        df2 = pd.read_csv(os.path.join('assets','configs.csv'))
         dfl2 = df2.values.tolist()[0]  
         df3 = pd.read_csv(path)
         dfl3 = df3.values.tolist()
     else:
-        pathprov = 'assets//' + path.replace('//', '-').replace('.csv', '')
+        loc = path.replace('/', '-').replace('.csv', '')
+        pathprov = os.path.join('assets',loc)
         l_dir = listdir(pathprov)
         l_dir.pop(l_dir.index('configs.csv'))
         l_dir.pop(l_dir.index('data.csv'))
-        df2 = pd.read_csv(f'{pathprov}//configs.csv')
+        df2 = pd.read_csv(os.path.join(pathprov,'configs.csv'))
         dfl2 = df2.values.tolist()[0]
         xs = []
         ys = []
         l_dir.sort()
         for d in l_dir:
-            loc = pd.read_csv(f'{pathprov}//{d}')
+            loc = pd.read_csv(os.path.join(pathprov,d))
             loc = loc.values.tolist()
             xs.append(loc[0])
             ys.append(loc[1])
@@ -56,7 +57,7 @@ def md(doc):
         'xs': xs,
         'ys': ys
         }
-        df3 = pd.read_csv(f'{pathprov}//data.csv')
+        df3 = pd.read_csv(os.path.join(pathprov,'data.csv'))
         dfl3 = df3.values.tolist()
         
     lenbase = len(df['xs'][0])
@@ -159,7 +160,7 @@ def main(l_data = False, route = None):
 
     server = Server({"/": bokeh_app}, io_loop=io_loop)
     server.start()
-    print("Opening Bokeh application on http://localhost:5006/")
+    print("Opening Bokeh application on http:/localhost:5006/")
 
     io_loop.add_callback(server.show, "/")
     io_loop.start()
