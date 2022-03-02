@@ -9,7 +9,7 @@ code is in current update to make it faster and easy to use, also to interpret i
 python interface.
 
 ---TO EXECUTE THE PROGRAM---
--Python 3x must be installed.
+-Python 3x must be installed. (if not run try python3 interface.pyw)
 -The libraries required are: matplotlib, numpy, pandas, bokeh, tkinter, os and sys.
 -The program was made for windows interfaces. To execute correctly in Linux and MacOs, lines
 using bokeh, os and sys libraries must be updated.

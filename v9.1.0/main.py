@@ -184,7 +184,7 @@ def main():
     df.to_csv(os.path.join(pathprov,'configs.csv'), index=False)
     
     df = pd.DataFrame(pd.read_csv(path).values.tolist(), columns = ['Name','mass','radio','x','y','vel','prad'])
-    df.to_csv(os.path.join(pathprov,'configs.csv'), index=False)
+    df.to_csv(os.path.join(pathprov,'data.csv'), index=False)
     
     dfv = pd.read_csv(path)
     dfvl = dfv.values.tolist()
