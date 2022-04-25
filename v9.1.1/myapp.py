@@ -68,7 +68,7 @@ def md(doc):
     obj = len(df['xs'])
     x = []
     y = []
-    if dfl2[8] + dfl2[9] == 1:
+    if dfl2[9] + dfl2[10] == 1:
         for n in range(obj):
             x += df['xs'][n]
             y += df['ys'][n]
@@ -95,8 +95,8 @@ def md(doc):
     
     list_cir = []
     for n in dfl3:
-        if dfl2[6] == 1:
-            if dfl2[8] + dfl2[9] == 1:
+        if dfl2[7] == 1:
+            if dfl2[9] + dfl2[10] == 1:
                 v = 0
             else:
                 v = n[2]

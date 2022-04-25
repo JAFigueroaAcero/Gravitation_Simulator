@@ -38,7 +38,7 @@ from tkinter import Tk
 from tkinter import ttk
 
 
-defaultconfigs = [60*60*24,60*10,60*60*24*365*2,20,500,1,1,0,1,1]
+defaultconfigs = [60*60*24,60*10,60*60*24*365*2,20,500,100,1,1,0,1,1]
 
 
 
@@ -383,7 +383,14 @@ class config():
         self.path = tk.Entry(self.a1,  width=30)
         self.path.grid(row=5, column=1, padx=5, pady=5)
         self.path.insert(0,path)
-        self.list_entry = [self.rtps, self.dt, self.tst, self.ips, self.il, self.path]
+
+        self.a2a1 = tk.Frame(self.a2)
+        tk.Label(self.a2a1, text = 'dpi:').grid(row=0,column=0, padx=5, pady=1)
+        self.dpi = tk.Entry(self.a2a1, width=3)
+        self.dpi.grid(row=0,column=1,padx=5,pady=1)
+        self.a2a1.grid(row=1, column=3)
+
+        self.list_entry = [self.rtps, self.dt, self.tst, self.ips, self.il, self.dpi, self.path]
 
 
         self.graphs = tk.BooleanVar(self.root)
@@ -416,9 +423,9 @@ class config():
         if isfile(os.path.join('assets','configs.csv')):
             df = pd.read_csv(os.path.join('assets','configs.csv'))
             dfl = df.values.tolist()[0]
-            for n,el in enumerate(dfl[0:5]):
+            for n,el in enumerate(dfl[0:6]):
                 self.list_entry[n].insert(0,el)
-            for n,el in enumerate(dfl[5:]):
+            for n,el in enumerate(dfl[6:]):
                 self.list_bool[n].set(el)
         
         def save():
@@ -439,10 +446,10 @@ class config():
                     for n in self.list_bool:
                         updatelist.append(int(n.get()))
                     if not None in updatelist:
-                        for n,u in enumerate(updatelist[0:5]):
+                        for n,u in enumerate(updatelist[0:6]):
                             self.list_entry[n].delete(0, 'end')
                             self.list_entry[n].insert(0, u)
-                        df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
+                        df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
                         df.to_csv(os.path.join('assets','configs.csv'), index=False)
                         
                         ad(self, 'Config updated', 'The configurations have been updated. \n data assets updated')
@@ -452,14 +459,14 @@ class config():
                 ad(self, 'Wrong data', 'Fill data correctly to be able to save. \n data assets updated')
         def defset():
             global defaultconfigs
-            df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
+            df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
             df.to_csv(os.path.join('assets','configs.csv'), index=False)
             ad(self, 'Config updated', 'The configurations have been \n set to default')
         
         self.cbgrpahs = ttk.Checkbutton(self.a2,
             text='Save graphs',
             variable=self.graphs)
-        self.cbgrpahs.grid(row=0, column=3,rowspan=2,padx=5, pady=5)
+        self.cbgrpahs.grid(row=0, column=3,padx=5, pady=5)
 
         self.cbpos = ttk.Checkbutton(self.a2,
             text='pos',

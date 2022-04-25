@@ -22,7 +22,7 @@ from os import mkdir
 from shutil import rmtree
 import os.path
 
-def graph(x,y,yt,xt,title,p,el):
+def graph(x,y,yt,xt,title,p,el,dpi):
     fig = plt.figure()
     plt.figure()
     x = list(x[m] for m in range(len(x)))
@@ -31,11 +31,10 @@ def graph(x,y,yt,xt,title,p,el):
     plt.ylabel(yt)
     plt.xlabel(xt)
     plt.title(f'{el} {title}.')
-    
-    plt.savefig(os.path.join(os.path.join(p,str(el)),f'{title}.png'))
+    plt.savefig(os.path.join(os.path.join(p,str(el)),f'{title}.png'), bbox_inches="tight", dpi=dpi)
     plt.close(fig)
 
-def grapht(x,y,yt,xt,title,p,time = True,axis = 0):
+def grapht(x,y,yt,xt,title,p,dpi,time = True,axis = 0, fixed = False):
     fig2 = plt.figure()
     plt.figure()
     if time:
@@ -56,7 +55,9 @@ def grapht(x,y,yt,xt,title,p,time = True,axis = 0):
     plt.ylabel(yt)
     plt.xlabel(xt)
     plt.title(f'Gen {title}.')
-    plt.savefig(os.path.join(os.path.join(p,'gen'),f'{title}.png'))
+    if fixed:
+        plt.gca().set_aspect('equal')
+    plt.savefig(os.path.join(os.path.join(p,'gen'),f'{title}.png'), bbox_inches="tight", dpi=dpi)
     plt.close(fig2)
 
 def main():
@@ -90,7 +91,7 @@ def main():
     it = tts / dt   # total iterations
     itf = frec * tts / trps # total final iterations
     rel = it / itf  # relation of total iterations over total final iterations
-    
+    dpi = dfl2[5]
     f.masssum(a)
     f.gm(a,dt)
     list_i = list(map(lambda x: int(x),rel * np.arange(0,itf,1)))
@@ -101,7 +102,7 @@ def main():
     list_xv = [[] for n in range(len(dfl))]
     list_yv = [[] for n in range(len(dfl))]
     list_t = []
-    if dfl2[5] == 1 or dfl2[7] == 1:
+    if dfl2[6] == 1 or dfl2[8] == 1:
         while t < tts:
             ac = a.copy()
             for n,el in enumerate(a):
@@ -136,7 +137,7 @@ def main():
     fig = plt.figure
     pvalue = path.replace('/', '-').replace('.csv', '')
 
-    if dfl2[5] == 1:
+    if dfl2[6] == 1:
         
         p2 = os.path.join('graphs', pvalue)
 
@@ -167,11 +168,11 @@ def main():
                     mkdir(os.path.join(p2,str(v[0])))
                 except:
                     pass
-                graph(list_t,list_n[n][0],'time(s)',f'x{val}',f'x{val}',p2,v[0])
-                graph(list_t,list_n[n][1],'time(s)',f'y{val}',f'y{val}',p2,v[0])
-            grapht(list_t,list_n,f'x{val}', 'time(s)',f'x{val}',p2)
-            grapht(list_t,list_n,f'y{val}', 'time(s)',f'y{val}',p2, axis = 1)
-            grapht(list_n,list_n,f'x{val}', f'y{val}',f'xy{val}',p2, time = False, axis = 1)
+                graph(list_t,list_n[n][0],'time(s)',f'x{val}',f'x{val}',p2,v[0],dpi)
+                graph(list_t,list_n[n][1],'time(s)',f'y{val}',f'y{val}',p2,v[0], dpi)
+            grapht(list_t,list_n,f'x{val}', 'time(s)',f'x{val}',p2, dpi)
+            grapht(list_t,list_n,f'y{val}', 'time(s)',f'y{val}',p2, dpi, axis = 1)
+            grapht(list_n,list_n,f'x{val}', f'y{val}',f'xy{val}',p2, dpi, time = False, axis = 1, fixed = True)
     
     pathprov = os.path.join('assets', pvalue)
     try: 
@@ -180,7 +181,7 @@ def main():
         rmtree(pathprov)
         mkdir(pathprov)
     
-    df = pd.DataFrame([pd.read_csv(os.path.join('assets','configs.csv')).values.tolist()[0]], columns = ['rtps','dt','tst','ips', 'il','sgraphs','pos','vel','x','y'])
+    df = pd.DataFrame([pd.read_csv(os.path.join('assets','configs.csv')).values.tolist()[0]], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
     df.to_csv(os.path.join(pathprov,'configs.csv'), index=False)
     
     df = pd.DataFrame(pd.read_csv(path).values.tolist(), columns = ['Name','mass','radio','x','y','vel','prad'])
@@ -188,12 +189,12 @@ def main():
     
     dfv = pd.read_csv(path)
     dfvl = dfv.values.tolist()
-    if dfl2[6] == 1:
-        if dfl2[8] + dfl2[9] == 2:
+    if dfl2[7] == 1:
+        if dfl2[9] + dfl2[10] == 2:
             for n, el in enumerate(list_f):
                 df = pd.DataFrame([el[0],el[1]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
-        elif dfl2[8] == 1:
+        elif dfl2[9] == 1:
             for n, el in enumerate(list_f):
                 df = pd.DataFrame([list_t,el[0]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
@@ -202,11 +203,11 @@ def main():
                 df = pd.DataFrame([list_t,el[1]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
     else:
-        if dfl2[8] + dfl2[9] == 2:
+        if dfl2[9] + dfl2[10] == 2:
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([el[0],el[1]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
-        elif dfl2[8] == 1:
+        elif dfl2[9] == 1:
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([list_t,el[0]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
@@ -214,13 +215,13 @@ def main():
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([list_t,el[1]])
                 df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
-    if dfl2[6] == 1:
-        if dfl2[8] == 1 and dfl2[9] == 1:
+    if dfl2[7] == 1:
+        if dfl2[9] == 1 and dfl2[10] == 1:
             return {
                 'xs': [list_f[n][0] for n, el in enumerate(list_f)],
                 'ys': [list_f[n][1] for n, el in enumerate(list_f)]
                 }
-        elif dfl2[8] == 1:
+        elif dfl2[9] == 1:
             return {
                 'ys': [list_f[n][0] for n, el in enumerate(list_f)],
                 'xs': [list_t for t in enumerate(list_f)]
@@ -231,12 +232,12 @@ def main():
                 'xs': [list_t for t in enumerate(list_f)]
                 }
     else:
-        if dfl2[8] == 1 and dfl2[9] == 1:
+        if dfl2[9] == 1 and dfl2[10] == 1:
             return {
                 'xs': [list_f2[n][0] for n, el in enumerate(list_f2)],
                 'ys': [list_f2[n][1] for n, el in enumerate(list_f2)]
                 }
-        elif dfl2[8] == 1:
+        elif dfl2[9] == 1:
             return {
                 'ys': [list_f2[n][0] for n, el in enumerate(list_f2)],
                 'xs': [list_t for t in enumerate(list_f2)]
