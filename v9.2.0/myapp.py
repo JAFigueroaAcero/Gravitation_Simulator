@@ -6,7 +6,7 @@ Created on Wed Dec  1 08:02:06 2021
 
 title: graficacion de gravitacion
 
-ver: 2.5
+ver: 2.6
 """
 
 from tornado.ioloop import IOLoop
@@ -21,8 +21,7 @@ from bokeh.application import Application
 from bokeh.server.server import Server
 import pandas as pd
 from os import listdir
-import os.path
-
+from os.path import join,dirname,realpath
 def md(doc):
     global lenbase
     global i
@@ -33,23 +32,23 @@ def md(doc):
     global list_dsc
     if not last:
         df = m.main()
-        df2 = pd.read_csv(os.path.join('assets','configs.csv'))
+        df2 = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv'))
         dfl2 = df2.values.tolist()[0]  
         df3 = pd.read_csv(path)
         dfl3 = df3.values.tolist()
     else:
         loc = path.replace('/', '-').replace('.csv', '')
-        pathprov = os.path.join('assets',loc)
+        pathprov = join(join(dirname(realpath(__file__)),'assets'),loc)
         l_dir = listdir(pathprov)
         l_dir.pop(l_dir.index('configs.csv'))
         l_dir.pop(l_dir.index('data.csv'))
-        df2 = pd.read_csv(os.path.join(pathprov,'configs.csv'))
+        df2 = pd.read_csv(join(pathprov,'configs.csv'))
         dfl2 = df2.values.tolist()[0]
         xs = []
         ys = []
         l_dir.sort()
         for d in l_dir:
-            loc = pd.read_csv(os.path.join(pathprov,d))
+            loc = pd.read_csv(join(pathprov,d))
             loc = loc.values.tolist()
             xs.append(loc[0])
             ys.append(loc[1])
@@ -57,7 +56,7 @@ def md(doc):
         'xs': xs,
         'ys': ys
         }
-        df3 = pd.read_csv(os.path.join(pathprov,'data.csv'))
+        df3 = pd.read_csv(join(pathprov,'data.csv'))
         dfl3 = df3.values.tolist()
         
     lenbase = len(df['xs'][0])
@@ -143,7 +142,7 @@ def main(l_data = False, route = None):
     global last
     global path2
     global path
-    df = pd.read_csv(os.path.join('assets', 'path.csv')
+    df = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'), 'path.csv')
 
 )
     dfl = df.values.tolist()[0]

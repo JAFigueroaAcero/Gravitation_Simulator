@@ -6,7 +6,7 @@ Created on Sun Nov 21 18:17:21 2021
 
 Title: Gravitación sim
 
-ver: 9.1
+ver: 9.2
 """
 import matplotlib
 matplotlib.use('Agg')
@@ -20,7 +20,7 @@ plt.rcParams.update({'figure.max_open_warning': 0})
 import time
 from os import mkdir
 from shutil import rmtree
-import os.path
+from os.path import join, dirname, realpath
 
 def graph(x,y,yt,xt,title,p,el,dpi):
     fig = plt.figure()
@@ -31,7 +31,7 @@ def graph(x,y,yt,xt,title,p,el,dpi):
     plt.ylabel(yt)
     plt.xlabel(xt)
     plt.title(f'{el} {title}.')
-    plt.savefig(os.path.join(os.path.join(p,str(el)),f'{title}.png'), bbox_inches="tight", dpi=dpi)
+    plt.savefig(join(join(p,str(el)),f'{title}.png'), bbox_inches="tight", dpi=dpi)
     plt.close(fig)
 
 def grapht(x,y,yt,xt,title,p,dpi,time = True,axis = 0, fixed = False):
@@ -57,11 +57,11 @@ def grapht(x,y,yt,xt,title,p,dpi,time = True,axis = 0, fixed = False):
     plt.title(f'Gen {title}.')
     if fixed:
         plt.gca().set_aspect('equal')
-    plt.savefig(os.path.join(os.path.join(p,'gen'),f'{title}.png'), bbox_inches="tight", dpi=dpi)
+    plt.savefig(join(join(p,'gen'),f'{title}.png'), bbox_inches="tight", dpi=dpi)
     plt.close(fig2)
 
 def main():
-    df = pd.read_csv(os.path.join('assets', 'path.csv'))
+    df = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'), 'path.csv'))
     dfl = df.values.tolist()[0]
     path = dfl[0]
     df = pd.read_csv(path)
@@ -80,7 +80,7 @@ def main():
     yvel
     '''
     
-    df2 = pd.read_csv(os.path.join('assets','configs.csv'))
+    df2 = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv'))
     dfl2 = df2.values.tolist()[0]
     # variables in seconds
     trps = dfl2[0] # real time per second
@@ -139,7 +139,7 @@ def main():
 
     if dfl2[6] == 1:
         
-        p2 = os.path.join('graphs', pvalue)
+        p2 = join('graphs', pvalue)
 
         try:
             mkdir('graphs')
@@ -151,10 +151,10 @@ def main():
             rmtree(p2)
             mkdir(p2)
         try:
-            mkdir(os.path.join(p2,'gen'))
+            mkdir(join(p2,'gen'))
         except:
-            rmtree(os.path.join(p2,'gen'))
-            mkdir(os.path.join(p2,'gen'))
+            rmtree(join(p2,'gen'))
+            mkdir(join(p2,'gen'))
         ax = ['pos(m)','vel(ms)']
         for rep,val in enumerate(ax):
             if rep == 0:
@@ -165,7 +165,7 @@ def main():
                 v = list(a)
                 v = v[n]
                 try:
-                    mkdir(os.path.join(p2,str(v[0])))
+                    mkdir(join(p2,str(v[0])))
                 except:
                     pass
                 graph(list_t,list_n[n][0],'time(s)',f'x{val}',f'x{val}',p2,v[0],dpi)
@@ -174,18 +174,18 @@ def main():
             grapht(list_t,list_n,f'y{val}', 'time(s)',f'y{val}',p2, dpi, axis = 1)
             grapht(list_n,list_n,f'x{val}', f'y{val}',f'xy{val}',p2, dpi, time = False, axis = 1, fixed = True)
     
-    pathprov = os.path.join('assets', pvalue)
+    pathprov = join(join(dirname(realpath(__file__)),'assets'), pvalue)
     try: 
         mkdir(pathprov)
     except:
         rmtree(pathprov)
         mkdir(pathprov)
     
-    df = pd.DataFrame([pd.read_csv(os.path.join('assets','configs.csv')).values.tolist()[0]], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
-    df.to_csv(os.path.join(pathprov,'configs.csv'), index=False)
+    df = pd.DataFrame([pd.read_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv')).values.tolist()[0]], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
+    df.to_csv(join(pathprov,'configs.csv'), index=False)
     
     df = pd.DataFrame(pd.read_csv(path).values.tolist(), columns = ['Name','mass','radio','x','y','vel','prad'])
-    df.to_csv(os.path.join(pathprov,'data.csv'), index=False)
+    df.to_csv(join(pathprov,'data.csv'), index=False)
     
     dfv = pd.read_csv(path)
     dfvl = dfv.values.tolist()
@@ -193,28 +193,28 @@ def main():
         if dfl2[9] + dfl2[10] == 2:
             for n, el in enumerate(list_f):
                 df = pd.DataFrame([el[0],el[1]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
         elif dfl2[9] == 1:
             for n, el in enumerate(list_f):
                 df = pd.DataFrame([list_t,el[0]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
         else:
             for n, el in enumerate(list_f):
                 df = pd.DataFrame([list_t,el[1]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
     else:
         if dfl2[9] + dfl2[10] == 2:
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([el[0],el[1]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
         elif dfl2[9] == 1:
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([list_t,el[0]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
         else:
             for n, el in enumerate(list_f2):
                 df = pd.DataFrame([list_t,el[1]])
-                df.to_csv(os.path.join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
+                df.to_csv(join(pathprov,f'{dfvl[n][0]}.csv'), index=False)
     if dfl2[7] == 1:
         if dfl2[9] == 1 and dfl2[10] == 1:
             return {

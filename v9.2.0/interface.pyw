@@ -6,29 +6,24 @@ Created on Mon Nov  8 19:50:20 2021
 
 Title: Interfaz tkinter Gravitación sim
 
-ver: 2.9
+ver: 3.0
 """
 
-
-
-from os.path import isfile, isdir
+from os.path import isfile, isdir, dirname, join,realpath
 import pandas as pd
-import os.path
 
 def proute(pr):
     global path
     df = pd.DataFrame([pr], columns = ['path'])
-    df.to_csv(os.path.join('assets', 'path.csv'), index=False)
+    df.to_csv(join(join(dirname(realpath(__file__)),'assets'), 'path.csv'), index=False)
     path = pr
 
-if isfile(os.path.join('assets', 'path.csv')):
-        df = pd.read_csv(os.path.join('assets', 'path.csv')
-
-)
+if isfile(join(join(dirname(realpath(__file__)),'assets'), 'path.csv')):
+        df = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'), 'path.csv'))
         dfl = df.values.tolist()[0]
         path = dfl[0]
 else:    
-        proute(os.path.join('assets', 'data.csv'))
+        proute(join(join(dirname(realpath(__file__)),'assets'), 'data.csv'))
 
 
 import tkinter as tk
@@ -168,7 +163,7 @@ class ad():
         self.root.resizable(0,0)
         self.root.geometry('240x100')
         self.root.title(title)
-        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
+        self.root.iconbitmap(join(join(dirname(realpath(__file__)),'assets'), 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width=200, height=100)
         self.a1l = tk.Label(self.a1, text=text, anchor="center")
@@ -204,7 +199,7 @@ class conversion():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title('Converter')
-        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
+        self.root.iconbitmap(join(join(dirname(realpath(__file__)),'assets'), 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width = 220, height = 200)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -301,7 +296,7 @@ class helpd():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title(name)
-        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
+        self.root.iconbitmap(join(join(dirname(realpath(__file__)),'assets'), 'logo.ico'))
         
         self.alist = [tk.Frame(self.root)]
         loc = 0
@@ -348,7 +343,7 @@ class config():
         self.root = tk.Toplevel(parent.root)
         self.root.resizable(0,0)
         self.root.title('config')
-        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
+        self.root.iconbitmap(join(join(dirname(realpath(__file__)),'assets'), 'logo.ico'))
         
         self.a1 = tk.Frame(self.root, width = 220, height = 200)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -420,8 +415,8 @@ class config():
             loc2 = self.y.get()
             if not loc1 and not loc2:
                 self.y.set(True)
-        if isfile(os.path.join('assets','configs.csv')):
-            df = pd.read_csv(os.path.join('assets','configs.csv'))
+        if isfile(join(join(dirname(realpath(__file__)),'assets'),'configs.csv')):
+            df = pd.read_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv'))
             dfl = df.values.tolist()[0]
             for n,el in enumerate(dfl[0:6]):
                 self.list_entry[n].insert(0,el)
@@ -450,7 +445,7 @@ class config():
                             self.list_entry[n].delete(0, 'end')
                             self.list_entry[n].insert(0, u)
                         df = pd.DataFrame([updatelist], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
-                        df.to_csv(os.path.join('assets','configs.csv'), index=False)
+                        df.to_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv'), index=False)
                         
                         ad(self, 'Config updated', 'The configurations have been updated. \n data assets updated')
                 else:
@@ -460,7 +455,7 @@ class config():
         def defset():
             global defaultconfigs
             df = pd.DataFrame([defaultconfigs], columns = ['rtps','dt','tst','ips', 'il','dpi','sgraphs','pos','vel','x','y'])
-            df.to_csv(os.path.join('assets','configs.csv'), index=False)
+            df.to_csv(join(join(dirname(realpath(__file__)),'assets'),'configs.csv'), index=False)
             ad(self, 'Config updated', 'The configurations have been \n set to default')
         
         self.cbgrpahs = ttk.Checkbutton(self.a2,
@@ -540,7 +535,7 @@ class main():
         self.root = tk.Tk()
         self.root.resizable(0,0)
         self.root.title('Gravity simulator')
-        self.root.iconbitmap(os.path.join('assets', 'logo.ico'))
+        self.root.iconbitmap(join(join(dirname(realpath(__file__)),'assets'), 'logo.ico'))
         
         self.a1 = tk.Frame(self.root)
         self.a1.grid(row=1, column=0, sticky='nsew', pady=10)
@@ -593,7 +588,7 @@ class main():
                 m.main()
         def runlast():
             loc = path.replace('/', '-').replace('.csv', '')
-            pathprov = os.path.join('assets',loc)
+            pathprov = join(join(dirname(realpath(__file__)),'assets'),loc)
             if isdir(pathprov):
                     m.main(l_data = True, route = pathprov)
             else:
